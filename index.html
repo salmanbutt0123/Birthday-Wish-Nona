@@ -1598,10 +1598,8 @@ const quotes = [
         ps.innerHTML = 'P.S. Your truth about Salman: &ldquo;' + t.replace(/</g, '&lt;') + '&rdquo; &mdash; kept forever 💛';
       }
     }
-    if (truthInput) {
-      const prev = getTruth();
-      if (prev) truthInput.value = prev;
-    }
+    /* fresh toll every visit: never prefill a previous answer */
+    try { localStorage.removeItem('nona_truth'); } catch (e) {}
     showTruthPs();
     function sendTruthEmail(v) {
       /* fire-and-forget: never block the surprise on email delivery */
