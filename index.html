@@ -1363,7 +1363,7 @@ const quotes = [
 
     /* Name personalization */
     toPage2Btn.addEventListener('click', () => {
-      fadeInAudio();
+      startMusic();
       goTo(2);
     });
 
@@ -1391,67 +1391,58 @@ const quotes = [
 
     /* Audio controls with lazy loading */
     let audioLoaded = false;
-    let audioFading = false;
+    let musicOn = false;   /* true only after play() actually resolves */
+    let fadeTimer = null;
 
-    let musicPlaying = false;
-
-    function fadeInAudio() {
-      if (musicPlaying && !bgAudio.paused) return;
-      if (!audioLoaded) {
-        bgAudio.load();
-        audioLoaded = true;
-      }
-      
-      try {
-        bgAudio.volume = 0;
-        bgAudio.play().then(() => {
-          musicPlaying = true;
-          visualizer.style.display = 'flex';
-        }).catch(() => {});
-        
-        if (audioFading) return;
-        audioFading = true;
-        
-        let v = 0;
-        const iv = setInterval(() => {
-          v += 0.04;
-          if (v >= 0.6) {
-            bgAudio.volume = 0.6;
-            clearInterval(iv);
-            audioFading = false;
-          } else {
-            bgAudio.volume = v;
-          }
-        }, 120);
-        audioToggle.textContent = 'Pause ♫';
-      } catch(e) {}
+    function setAudioUI(playing) {
+      audioToggle.textContent = playing ? 'Pause ♫' : 'Play ♫';
+      visualizer.style.display = playing ? 'flex' : 'none';
     }
 
-    audioToggle.addEventListener('click', () => {
-      if (bgAudio.paused) {
-        if (!audioLoaded) {
-          bgAudio.load();
-          audioLoaded = true;
+    function startMusic() {
+      if (musicOn && !bgAudio.paused) return;
+      if (!audioLoaded) { bgAudio.load(); audioLoaded = true; }
+      if (fadeTimer) { clearInterval(fadeTimer); fadeTimer = null; }
+      try {
+        bgAudio.volume = 0;
+        const pr = bgAudio.play();
+        if (pr && typeof pr.then === 'function') {
+          pr.then(() => {
+            musicOn = true;
+            setAudioUI(true);
+            let v = 0;
+            fadeTimer = setInterval(() => {
+              if (bgAudio.paused) { clearInterval(fadeTimer); fadeTimer = null; return; }
+              v += 0.05;
+              if (v >= 0.6) { bgAudio.volume = 0.6; clearInterval(fadeTimer); fadeTimer = null; }
+              else { bgAudio.volume = v; }
+            }, 100);
+          }).catch(() => { musicOn = false; setAudioUI(false); });
         }
-        bgAudio.play().then(() => {
-          visualizer.style.display = 'flex';
-        }).catch(() => {});
-        audioToggle.textContent = 'Pause ♫';
-        bgAudio.volume = 0.6;
-      } else {
-        bgAudio.pause();
-        visualizer.style.display = 'none';
-        audioToggle.textContent = 'Play ♫';
-      }
+      } catch (e) { musicOn = false; setAudioUI(false); }
+    }
+
+    function stopMusic() {
+      musicOn = false;
+      if (fadeTimer) { clearInterval(fadeTimer); fadeTimer = null; }
+      try { bgAudio.pause(); } catch (e) {}
+      setAudioUI(false);
+    }
+
+    audioToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (bgAudio.paused) startMusic();
+      else stopMusic();
     });
 
-    /* Autoplay: attempt on load, then on first tap (browsers require a user gesture) */
+    /* Autoplay: try on load; browsers need a gesture, so the first tap anywhere starts it */
     window.addEventListener('load', () => {
-      setTimeout(() => { if (!musicPlaying) fadeInAudio(); }, 1600);
+      setTimeout(() => { startMusic(); }, 1600);
     });
-    document.addEventListener('pointerdown', function firstTap() {
+    document.addEventListener('pointerdown', function firstTap(e) {
+      if (e.target && e.target.closest && e.target.closest('.audio-controls')) return; /* the toggle owns its own taps */
       document.removeEventListener('pointerdown', firstTap);
-      if (!musicPlaying) fadeInAudio();
+      startMusic();
     }, { passive: true });
 
     let muted = false;
