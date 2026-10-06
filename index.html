@@ -1759,7 +1759,15 @@ par.... ye mere dil ki awaz hai 🫀💗✨ koi kitaab thori hai 💋🫠🫀�
   
     /* ---------- Memories gallery ---------- */
     const ALBUMS = [
-      {
+{
+        title: "The Beautiful Name \uD83E\uDD73",
+        subtitle: "I looked it up — and it fits you perfectly.",
+        cover: "memories/beautiful-name/thumbs/01.jpg",
+        photos: [
+          { src: "memories/beautiful-name/01.jpg", caption: "\u2018Nona\u2019 — young lady. \u2018Aya\u2019 — miracle. I googled your name, and honestly? It suits you. \uD83E\uDD73✨" }
+        ]
+      },
+{
         title: "The Big Explanations \uD83D\uDCDA",
         subtitle: "Your lessons, your patience — every explanation became a memory.",
         cover: "memories/big-explanations/thumbs/01.jpg",
@@ -1774,15 +1782,23 @@ par.... ye mere dil ki awaz hai 🫀💗✨ koi kitaab thori hai 💋🫠🫀�
           { src: "memories/big-explanations/08.jpg", caption: "Your big lectures, which I loved — even Bing in Indonesian \uD83D\uDC30" }
         ]
       },
-      {
+{
         title: "My Small Explanations for You \uD83D\uDCAC",
         subtitle: "The little moments — quick corrections and endless patience.",
         cover: "memories/small-explanations/thumbs/01.jpg",
         photos: [
           { src: "memories/small-explanations/01.jpg", caption: "Me butchering \u2018leave\u2019 five times — lives, liv, leeeve… and you, patient as ever: \u2018leave.\u2019 \uD83D\uDE04🤍" }
         ]
-      }      ,
-      {
+      },
+{
+        title: "Your Warnings \uD83D\uDE02",
+        subtitle: "Duly noted. \uD83D\uDE02",
+        cover: "memories/your-warnings/thumbs/01.jpg",
+        photos: [
+          { src: "memories/your-warnings/01.jpg", caption: "Your warning \uD83D\uDE02 — \u2018last warning ok\u2019 \uD83D\uDC31" }
+        ]
+      },
+{
         title: "Your Sudden Closings \uD83D\uDE2D",
         subtitle: "Gone before I could even say bye.",
         cover: "memories/sudden-closings/thumbs/01.jpg",
@@ -1790,7 +1806,7 @@ par.... ye mere dil ki awaz hai 🫀💗✨ koi kitaab thori hai 💋🫠🫀�
           { src: "memories/sudden-closings/01.jpg", caption: "And then your sudden closings \uD83D\uDE2D — the voiceroom ends, just like that!" }
         ]
       },
-      {
+{
         title: "I Know Where You Live \uD83D\uDE1C",
         subtitle: "\u2026and where you teach. 😌",
         cover: "memories/know-where-you-live/thumbs/01.jpg",
@@ -1800,7 +1816,7 @@ par.... ye mere dil ki awaz hai 🫀💗✨ koi kitaab thori hai 💋🫠🫀�
           { src: "memories/know-where-you-live/03.jpg", caption: "The classroom diaries \uD83C\uDFEB✨" }
         ]
       },
-      {
+{
         title: "What You Enjoy ✨",
         subtitle: "The little things that make you, you.",
         cover: "memories/what-you-enjoy/thumbs/01.jpg",
@@ -1808,27 +1824,8 @@ par.... ye mere dil ki awaz hai 🫀💗✨ koi kitaab thori hai 💋🫠🫀�
           { src: "memories/what-you-enjoy/01.jpg", caption: "Mountains of notebooks — \u2018Rajin Pangkal Pandai\u2019 \uD83D\uDCDA" },
           { src: "memories/what-you-enjoy/02.jpg", caption: "Stories you enjoy \uD83D\uDCF1✨" }
         ]
-      }
-      ,
-      {
-        title: "The Beautiful Name \uD83E\uDD73",
-        subtitle: "I looked it up — and it fits you perfectly.",
-        cover: "memories/beautiful-name/thumbs/01.jpg",
-        photos: [
-          { src: "memories/beautiful-name/01.jpg", caption: "\u2018Nona\u2019 — young lady. \u2018Aya\u2019 — miracle. I googled your name, and honestly? It suits you. \uD83E\uDD73✨" }
-        ]
-      }
-      ,
-      {
-        title: "Your Warnings \uD83D\uDE02",
-        subtitle: "Duly noted. \uD83D\uDE02",
-        cover: "memories/your-warnings/thumbs/01.jpg",
-        photos: [
-          { src: "memories/your-warnings/01.jpg", caption: "Your warning \uD83D\uDE02 — \u2018last warning ok\u2019 \uD83D\uDC31" }
-        ]
-      }
-      ,
-      {
+      },
+{
         title: "Accepting Me Imperfectly \uD83E\uDD79",
         subtitle: "Memes that say what words can\u2019t.",
         cover: "memories/accepting-imperfectly/thumbs/01.jpg",
@@ -1837,7 +1834,6 @@ par.... ye mere dil ki awaz hai 🫀💗✨ koi kitaab thori hai 💋🫠🫀�
           { src: "memories/accepting-imperfectly/02.jpg", caption: "But... \u2018I know u secretly hate me, but it\u2019s ok\u2019 \uD83D\uDE02\uD83D\uDC31" }
         ]
       }
-
     ];
     let lbAlbum = 0, lbIndex = 0;
     const albumGrid = document.getElementById('albumGrid');
