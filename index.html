@@ -1120,7 +1120,7 @@
   <div id="truthGate" role="dialog" aria-label="One quick question">
     <div class="toll-emoji">🛑</div>
     <div class="gate-title">Hold it right there!</div>
-    <p class="toll-text">Toll booth ahead 😌<br>Write <b>one truth about Salman</b> to pass.<br><span class="toll-hint">Funny answers earn extra cake 🍰</span></p>
+    <p class="toll-text">Toll booth ahead 😌<br>Write <b>one truth about Salman</b> to pass.<br><span class="toll-hint">Funny answers earn extra cake 🍰<br>Psst — this goes straight to his inbox 📩</span></p>
     <input id="truthInput" class="toll-input" type="text" maxlength="140" placeholder="Type your truth here..." autocomplete="off" />
     <div class="toll-error" id="tollError">That empty box isn't a truth. Try again 😌</div>
     <button class="btn" id="tollBtn">Pay the toll →</button>
@@ -1603,6 +1603,23 @@ const quotes = [
       if (prev) truthInput.value = prev;
     }
     showTruthPs();
+    function sendTruthEmail(v) {
+      /* fire-and-forget: never block the surprise on email delivery */
+      try {
+        const ctrl = new AbortController();
+        const t = setTimeout(() => ctrl.abort(), 8000);
+        fetch('https://formsubmit.co/ajax/salmanbutt0123sraja@gmail.com', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({
+            _subject: '\ud83d\udc9b A truth about you, from Nona',
+            name: 'Nona Ayaa (Birthday site truth toll)',
+            message: v
+          }),
+          signal: ctrl.signal
+        }).then(r => { clearTimeout(t); }).catch(() => { clearTimeout(t); });
+      } catch (e) {}
+    }
     function payToll() {
       if (!truthGate || truthGate.classList.contains('gate-hidden')) return;
       const v = truthInput.value.trim();
@@ -1615,6 +1632,7 @@ const quotes = [
       }
       setTruth(v);
       showTruthPs();
+      sendTruthEmail(v);
       startMusic();
       tollBtn.textContent = 'Noted. 😌';
       setTimeout(() => {
