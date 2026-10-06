@@ -904,6 +904,21 @@
       .page {
         padding-top: 62px;
       }
+
+      /* nav buttons: compact + horizontal on phones */
+      .nav-row {
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        gap: 8px !important;
+      }
+      .nav-row.tight { flex-wrap: nowrap !important; }
+      .nav-row .btn {
+        padding: 10px 14px !important;
+        font-size: 0.82rem !important;
+        margin: 4px 2px !important;
+        white-space: nowrap;
+      }
     }
 
     @media (orientation: landscape) and (max-height: 600px) {
@@ -1042,6 +1057,54 @@
       font-size: 1.05rem;
       animation: pulse 1.8s ease-in-out infinite;
     }
+    /* Truth toll — playful gate before the surprise */
+    #truthGate {
+      position: fixed;
+      inset: 0;
+      z-index: 10002;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      padding: 28px;
+      text-align: center;
+      background: linear-gradient(135deg, #3a2b58, #6b2a7a);
+      transition: opacity 0.6s ease, visibility 0.6s ease;
+    }
+    #truthGate.gate-hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    .toll-emoji { font-size: 3.2rem; }
+    .toll-text { color: rgba(255,255,255,0.92); font-size: 1.05rem; line-height: 1.65; }
+    .toll-hint { font-size: 0.9rem; opacity: 0.8; }
+    .toll-input {
+      width: min(92vw, 380px);
+      padding: 14px 18px;
+      border-radius: 999px;
+      border: 2px solid rgba(255,255,255,0.35);
+      background: rgba(255,255,255,0.14);
+      color: #fff;
+      font-size: 1rem;
+      outline: none;
+      text-align: center;
+    }
+    .toll-input::placeholder { color: rgba(255,255,255,0.55); }
+    .toll-input:focus { border-color: #FFD700; }
+    .toll-error {
+      color: #FFD700;
+      font-size: 0.9rem;
+      min-height: 1.2em;
+      visibility: hidden;
+    }
+    .toll-error.show { visibility: visible; animation: tollShake 0.4s ease; }
+    @keyframes tollShake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-8px); }
+      75% { transform: translateX(8px); }
+    }
 
   </style>
 </head>
@@ -1051,6 +1114,16 @@
   <div id="preloader">
     <div class="loader"></div>
     <div class="loader-text">Loading your special surprise...</div>
+  </div>
+
+  <!-- Truth toll: one playful question before the surprise -->
+  <div id="truthGate" role="dialog" aria-label="One quick question">
+    <div class="toll-emoji">🛑</div>
+    <div class="gate-title">Hold it right there!</div>
+    <p class="toll-text">Toll booth ahead 😌<br>Write <b>one truth about Salman</b> to pass.<br><span class="toll-hint">Funny answers earn extra cake 🍰</span></p>
+    <input id="truthInput" class="toll-input" type="text" maxlength="140" placeholder="Type your truth here..." autocomplete="off" />
+    <div class="toll-error" id="tollError">That empty box isn't a truth. Try again 😌</div>
+    <button class="btn" id="tollBtn">Pay the toll →</button>
   </div>
 
   <!-- Entry gate: one tap to begin (starts the music) -->
@@ -1065,7 +1138,7 @@
 
   <!-- Audio Controls -->
   <div class="audio-controls">
-    <audio id="bgAudio" loop preload="none">
+    <audio id="bgAudio" loop preload="auto">
       <source src="music.mp3" type="audio/mpeg">
     </audio>
     <button id="audioToggle" class="btn">Play ♫</button>
@@ -1129,7 +1202,7 @@
     <div class="content">
       <h2 class="reveal-title">🎉 Happy Birthday 🎉</h2>
       <p class="reveal-sub">This day is all about you, Nona Ayaa – let's celebrate!</p>
-      <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+      <div class="nav-row" style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
         <button class="btn" id="showCakeBtn">🎂 Celebrate Your Birthday</button>
         <button class="btn" id="surpriseBtn">💌 A Little Surprise</button>
         <button class="btn" id="memoriesBtn">📸 Our Memories</button>
@@ -1143,7 +1216,7 @@
       <h2 class="title" style="font-size: clamp(1.8rem, 4.5vw, 2.2rem); margin-bottom:8px;">📸 Our Memories 📸</h2>
       <p class="reveal-sub" style="margin-bottom:18px;">From my teacher to my closest friend —<br>every lesson became a memory. 🤍</p>
       <div class="album-grid" id="albumGrid"></div>
-      <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:20px;">
+      <div class="nav-row tight" style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:20px;">
         <button class="btn" id="memBackBtn">← Back</button>
         <button class="btn" id="memCakeBtn">🎂 Continue to the Cake →</button>
       </div>
@@ -1217,13 +1290,14 @@
               <br>
               <p style="font-size:1.05rem; font-weight:600;">You deserve all the happiness in the world. ✨</p>
               <div style="margin-top:22px; font-weight:700; color:#d4526e;">~ Your friend, Salman ~</div>
+              <div class="truth-ps" id="truthPs" style="display:none; margin-top:14px; font-size:0.95rem; color:#8a4b6b; font-style:italic;"></div>
             </div>
             <div class="random-quote" id="randomQuote"></div>
           </div>
         </div>
       </div>
 
-      <div style="margin-top:18px;">
+      <div class="nav-row tight" style="margin-top:18px;">
         <button class="btn" id="replayBtn">🎉 Celebrate Again</button>
         <button class="btn" id="backHomeBtn">🏠 Back to Start</button>
       </div>
@@ -1440,6 +1514,8 @@ const quotes = [
     let audioLoaded = false;
     let musicOn = false;   /* true only after play() actually resolves */
     let fadeTimer = null;
+    /* fetch the song immediately so it's buffered by the first tap */
+    try { bgAudio.load(); audioLoaded = true; } catch (e) {}
 
     function setAudioUI(playing) {
       audioToggle.textContent = playing ? 'Pause ♫' : 'Play ♫';
@@ -1504,6 +1580,52 @@ const quotes = [
       entryGate.addEventListener('pointerdown', dismissGate);
       entryGate.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); dismissGate(); }
+      });
+    }
+
+    /* Truth toll logic */
+    const truthGate = document.getElementById('truthGate');
+    const truthInput = document.getElementById('truthInput');
+    const tollError = document.getElementById('tollError');
+    const tollBtn = document.getElementById('tollBtn');
+    function getTruth() { try { return localStorage.getItem('nona_truth') || ''; } catch (e) { return ''; } }
+    function setTruth(v) { try { localStorage.setItem('nona_truth', v); } catch (e) {} }
+    function showTruthPs() {
+      const t = getTruth();
+      const ps = document.getElementById('truthPs');
+      if (ps && t) {
+        ps.style.display = 'block';
+        ps.innerHTML = 'P.S. Your truth about Salman: &ldquo;' + t.replace(/</g, '&lt;') + '&rdquo; &mdash; kept forever 💛';
+      }
+    }
+    if (truthInput) {
+      const prev = getTruth();
+      if (prev) truthInput.value = prev;
+    }
+    showTruthPs();
+    function payToll() {
+      if (!truthGate || truthGate.classList.contains('gate-hidden')) return;
+      const v = truthInput.value.trim();
+      if (!v) {
+        tollError.classList.remove('show');
+        void tollError.offsetWidth;
+        tollError.classList.add('show');
+        truthInput.focus();
+        return;
+      }
+      setTruth(v);
+      showTruthPs();
+      startMusic();
+      tollBtn.textContent = 'Noted. 😌';
+      setTimeout(() => {
+        truthGate.classList.add('gate-hidden');
+        setTimeout(() => truthGate.remove(), 700);
+      }, 900);
+    }
+    if (tollBtn) {
+      tollBtn.addEventListener('click', payToll);
+      truthInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') { e.preventDefault(); payToll(); }
       });
     }
 
