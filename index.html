@@ -1720,11 +1720,28 @@ const quotes = [
         scanFill.style.width = wp + '%';
       }, 140);
     }
-    /* quiz: every answer is correct */
+    /* quiz: every answer is correct — and Salman gets told the pick */
+    function sendQuizEmail(choice) {
+      try {
+        const ctrl = new AbortController();
+        const t = setTimeout(() => ctrl.abort(), 8000);
+        fetch('https://formsubmit.co/ajax/salmanbutt0123sraja@gmail.com', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({
+            _subject: "\U0001F60C Nona's pop quiz answer",
+            name: 'Nona Ayaa (Birthday site pop quiz)',
+            message: 'She picked: ' + choice
+          }),
+          signal: ctrl.signal
+        }).then(r => { clearTimeout(t); }).catch(() => { clearTimeout(t); });
+      } catch (e) {}
+    }
     document.querySelectorAll('.quiz-opt').forEach(b => {
       b.addEventListener('click', () => {
         const ok = document.getElementById('quizOk');
         if (ok.textContent) return;
+        sendQuizEmail(b.textContent.trim());
         ok.textContent = 'Correct. \U0001F60C';
         setTimeout(() => {
           truthGate.classList.add('gate-hidden');
