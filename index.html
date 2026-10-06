@@ -994,6 +994,15 @@
     #lbPrev { left:10px; top:42%; }
     #lbNext { right:10px; top:42%; }
 
+  
+    /* Mobile: shrink card so end buttons stay visible */
+    @media (max-width: 480px) {
+      .card-container { height: min(540px, 62vh); margin: 10px auto; }
+      .face { padding: 22px 18px; }
+      .wish-text { font-size: clamp(1.05rem, 2.6vw, 1.25rem); line-height: 1.9; }
+      .random-quote { font-size: .92rem; margin-top: 14px; padding: 12px; }
+    }
+
   </style>
 </head>
 <body>
@@ -1223,15 +1232,7 @@
     /* Random Quotes */
   /* Random Quotes */
 const quotes = [
-`ye jo hum tum mile hain 🥹❤️
-ittefaq thori hai ✨♥️
-mil kr tumhe chor den 😭🥺
-mazaq thori hai ✨🥹
-or chor dete agr hoti muhabbat 💗 1 had tak ✨🥹 
-magar hamari muhabbat ka koi💗✨
-hisaab thori hai ✨💗🫀🫠
-ab tum dhoondogi meri is ghazal ka jawab ✨💗🫀 
-par.... ye mere dil ki awaz hai 🫀💗✨ koi kitaab thori hai 💋🫠🫀💗🥹✨❤️`
+`A teacher who becomes a friend is a gift twice given. \uD83E\uDD0D`
 ];
 
     /* Preloader */
