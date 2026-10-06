@@ -1002,6 +1002,46 @@
       .wish-text { font-size: clamp(1.05rem, 2.6vw, 1.25rem); line-height: 1.9; }
       .random-quote { font-size: .92rem; margin-top: 14px; padding: 12px; }
     }
+    /* Entry gate — one tap starts the music (browsers require a gesture for sound) */
+    #entryGate {
+      position: fixed;
+      inset: 0;
+      z-index: 10001;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      background: linear-gradient(135deg, #2b5876, #4e4376);
+      cursor: pointer;
+      transition: opacity 0.7s ease, visibility 0.7s ease;
+      text-align: center;
+      padding: 24px;
+    }
+    #entryGate.gate-hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    .gate-gift {
+      font-size: 5rem;
+      animation: gateBounce 1.6s ease-in-out infinite;
+      filter: drop-shadow(0 12px 24px rgba(0,0,0,0.35));
+    }
+    @keyframes gateBounce {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-16px) scale(1.06); }
+    }
+    .gate-title {
+      font-family: 'Dancing Script', cursive;
+      font-size: clamp(2rem, 7vw, 3rem);
+      color: #fff;
+    }
+    .gate-sub {
+      color: rgba(255,255,255,0.85);
+      font-size: 1.05rem;
+      animation: pulse 1.8s ease-in-out infinite;
+    }
 
   </style>
 </head>
@@ -1011,6 +1051,13 @@
   <div id="preloader">
     <div class="loader"></div>
     <div class="loader-text">Loading your special surprise...</div>
+  </div>
+
+  <!-- Entry gate: one tap to begin (starts the music) -->
+  <div id="entryGate" role="button" tabindex="0" aria-label="Tap to open your surprise">
+    <div class="gate-gift">🎁</div>
+    <div class="gate-title">A surprise awaits...</div>
+    <div class="gate-sub">Tap anywhere to open 💛</div>
   </div>
 
   <!-- Background -->
@@ -1444,6 +1491,21 @@ const quotes = [
       document.removeEventListener('pointerdown', firstTap);
       startMusic();
     }, { passive: true });
+
+    /* Entry gate: the one tap that starts everything */
+    const entryGate = document.getElementById('entryGate');
+    function dismissGate() {
+      if (!entryGate || entryGate.classList.contains('gate-hidden')) return;
+      startMusic();
+      entryGate.classList.add('gate-hidden');
+      setTimeout(() => entryGate.remove(), 800);
+    }
+    if (entryGate) {
+      entryGate.addEventListener('pointerdown', dismissGate);
+      entryGate.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); dismissGate(); }
+      });
+    }
 
     let muted = false;
     muteToggle.addEventListener('click', () => {
