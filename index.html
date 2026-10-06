@@ -1620,14 +1620,14 @@ const quotes = [
           const gr = Math.round(Math.random() * 36 - 18);
           giftEl.style.transform = 'translate(' + gx + 'px,' + gy + 'px) rotate(' + gr + 'deg)';
         }
-        if (subEl) subEl.textContent = 'Too slow! \U0001F61C Try again';
+        if (subEl) subEl.textContent = 'Too slow! 😜 Try again';
         return;
       }
       /* troll 4: fake error, then the real surprise */
       startMusic();
       if (subEl) subEl.textContent = 'Error 404: surprise not found...';
       setTimeout(() => {
-        if (subEl) subEl.textContent = 'Just kidding \U0001F60C';
+        if (subEl) subEl.textContent = 'Just kidding 😌';
         setTimeout(() => {
           entryGate.classList.add('gate-hidden');
           setTimeout(() => entryGate.remove(), 800);
@@ -1700,8 +1700,8 @@ const quotes = [
       const scanVerdict = document.getElementById('scanVerdict');
       scanWrap.style.display = 'block';
       const verdicts = [
-        'Truthiness: 97% \u2014 accepted. Barely. \U0001F60C',
-        'Hmm... suspiciously kind. Accepted. \U0001F60C',
+        'Truthiness: 97% \u2014 accepted. Barely. 😌',
+        'Hmm... suspiciously kind. Accepted. 😌',
         'Scan complete: certified 100% truth \u2705'
       ];
       let wp = 0;
@@ -1729,7 +1729,7 @@ const quotes = [
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
           body: JSON.stringify({
-            _subject: "\U0001F60C Nona's pop quiz answer",
+            _subject: "😌 Nona's pop quiz answer",
             name: 'Nona Ayaa (Birthday site pop quiz)',
             message: 'She picked: ' + choice
           }),
@@ -1742,7 +1742,7 @@ const quotes = [
         const ok = document.getElementById('quizOk');
         if (ok.textContent) return;
         sendQuizEmail(b.textContent.trim());
-        ok.textContent = 'Correct. \U0001F60C';
+        ok.textContent = 'Correct. 😌';
         setTimeout(() => {
           truthGate.classList.add('gate-hidden');
           setTimeout(() => truthGate.remove(), 700);
@@ -2185,6 +2185,7 @@ const quotes = [
       lbSpinner.style.display = 'block';
       lbImg.style.opacity = '0';
       lbImg.src = ph.src;
+      lbRevealIfReady();
       lbImg.alt = ph.caption;
       lbCaption.textContent = ph.caption;
       lbCounter.textContent = (lbIndex + 1) + ' / ' + ALBUMS[lbAlbum].photos.length;
@@ -2199,6 +2200,12 @@ const quotes = [
       lbSpinner.style.display = 'none';
       lbImg.style.opacity = '1';
     });
+    function lbRevealIfReady() {
+      if (lbImg.complete && lbImg.naturalWidth > 0) {
+        lbSpinner.style.display = 'none';
+        lbImg.style.opacity = '1';
+      }
+    }
     lbImg.addEventListener('error', () => { lbSpinner.style.display = 'none'; });
     function lbStep(d) {
       const n = ALBUMS[lbAlbum].photos.length;
