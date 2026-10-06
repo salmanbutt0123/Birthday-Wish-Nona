@@ -889,6 +889,21 @@
       h1.title {
         font-size: clamp(1.8rem, 8vw, 2.5rem);
       }
+
+      /* compact audio controls + keep headings clear of them */
+      .audio-controls {
+        top: 10px;
+        right: 10px;
+        padding: 5px 6px;
+        gap: 5px;
+      }
+      .audio-controls .btn {
+        padding: 6px 9px;
+        font-size: .8rem;
+      }
+      .page {
+        padding-top: 62px;
+      }
     }
 
     @media (orientation: landscape) and (max-height: 600px) {
