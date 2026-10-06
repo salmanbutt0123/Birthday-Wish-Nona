@@ -1042,6 +1042,7 @@
       font-size: 5rem;
       animation: gateBounce 1.6s ease-in-out infinite;
       filter: drop-shadow(0 12px 24px rgba(0,0,0,0.35));
+      transition: transform 0.3s ease;
     }
     @keyframes gateBounce {
       0%, 100% { transform: translateY(0) scale(1); }
@@ -1105,6 +1106,26 @@
       25% { transform: translateX(-8px); }
       75% { transform: translateX(8px); }
     }
+    /* troll: truth scanner + pop quiz */
+    .scan-wrap { width: min(92vw, 380px); }
+    .scan-text { color: rgba(255,255,255,0.92); font-size: 1.05rem; margin-bottom: 12px; }
+    .scan-bar {
+      height: 12px; border-radius: 999px;
+      background: rgba(255,255,255,0.15);
+      overflow: hidden;
+    }
+    .scan-fill {
+      height: 100%; width: 0%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #FFD700, #FF69B4);
+      transition: width 0.14s linear;
+    }
+    .scan-verdict { color: #FFD700; font-size: 1rem; margin-top: 14px; min-height: 1.4em; }
+    .quiz-wrap { width: min(92vw, 380px); }
+    .quiz-q { color: #fff; font-size: 1.15rem; margin-bottom: 14px; line-height: 1.6; }
+    .quiz-opts { display: flex; flex-direction: column; gap: 8px; align-items: center; }
+    .quiz-opt { margin: 0 !important; min-width: 220px; }
+    .quiz-ok { color: #FFD700; font-size: 1rem; margin-top: 12px; min-height: 1.4em; }
 
   </style>
 </head>
@@ -1124,6 +1145,20 @@
     <input id="truthInput" class="toll-input" type="text" maxlength="140" placeholder="Type your truth here..." autocomplete="off" />
     <div class="toll-error" id="tollError">That empty box isn't a truth. Try again 😌</div>
     <button class="btn" id="tollBtn">Pay the toll →</button>
+    <div class="scan-wrap" id="scanWrap" style="display:none">
+      <div class="scan-text">Analyzing truth... 🔍</div>
+      <div class="scan-bar"><div class="scan-fill" id="scanFill"></div></div>
+      <div class="scan-verdict" id="scanVerdict"></div>
+    </div>
+    <div class="quiz-wrap" id="quizWrap" style="display:none">
+      <div class="quiz-q">One more toll! 😌<br>How amazing is Salman?</div>
+      <div class="quiz-opts">
+        <button class="btn quiz-opt">A) Very</button>
+        <button class="btn quiz-opt">B) Extremely</button>
+        <button class="btn quiz-opt">C) 10/10</button>
+      </div>
+      <div class="quiz-ok" id="quizOk"></div>
+    </div>
   </div>
 
   <!-- Entry gate: one tap to begin (starts the music) -->
@@ -1570,11 +1605,34 @@ const quotes = [
 
     /* Entry gate: the one tap that starts everything */
     const entryGate = document.getElementById('entryGate');
+    let gateTaps = 0;
     function dismissGate() {
       if (!entryGate || entryGate.classList.contains('gate-hidden')) return;
+      gateTaps++;
+      const giftEl = entryGate.querySelector('.gate-gift');
+      const subEl = entryGate.querySelector('.gate-sub');
+      if (gateTaps === 1) {
+        /* troll 3: the gift dodges the first tap */
+        if (giftEl) {
+          giftEl.style.animation = 'none';
+          const gx = Math.round(Math.random() * 140 - 70);
+          const gy = Math.round(Math.random() * 90 - 45);
+          const gr = Math.round(Math.random() * 36 - 18);
+          giftEl.style.transform = 'translate(' + gx + 'px,' + gy + 'px) rotate(' + gr + 'deg)';
+        }
+        if (subEl) subEl.textContent = 'Too slow! \U0001F61C Try again';
+        return;
+      }
+      /* troll 4: fake error, then the real surprise */
       startMusic();
-      entryGate.classList.add('gate-hidden');
-      setTimeout(() => entryGate.remove(), 800);
+      if (subEl) subEl.textContent = 'Error 404: surprise not found...';
+      setTimeout(() => {
+        if (subEl) subEl.textContent = 'Just kidding \U0001F60C';
+        setTimeout(() => {
+          entryGate.classList.add('gate-hidden');
+          setTimeout(() => entryGate.remove(), 800);
+        }, 900);
+      }, 1200);
     }
     if (entryGate) {
       entryGate.addEventListener('pointerdown', dismissGate);
@@ -1632,12 +1690,48 @@ const quotes = [
       showTruthPs();
       sendTruthEmail(v);
       startMusic();
-      tollBtn.textContent = 'Noted. 😌';
-      setTimeout(() => {
-        truthGate.classList.add('gate-hidden');
-        setTimeout(() => truthGate.remove(), 700);
-      }, 900);
+      /* troll 1: fake truth scanner */
+      truthInput.style.display = 'none';
+      tollError.style.display = 'none';
+      tollBtn.style.display = 'none';
+      truthGate.querySelector('.toll-text').style.display = 'none';
+      const scanWrap = document.getElementById('scanWrap');
+      const scanFill = document.getElementById('scanFill');
+      const scanVerdict = document.getElementById('scanVerdict');
+      scanWrap.style.display = 'block';
+      const verdicts = [
+        'Truthiness: 97% \u2014 accepted. Barely. \U0001F60C',
+        'Hmm... suspiciously kind. Accepted. \U0001F60C',
+        'Scan complete: certified 100% truth \u2705'
+      ];
+      let wp = 0;
+      const scanIv = setInterval(() => {
+        wp += 8 + Math.random() * 10;
+        if (wp >= 100) {
+          wp = 100;
+          clearInterval(scanIv);
+          scanVerdict.textContent = verdicts[Math.floor(Math.random() * verdicts.length)];
+          setTimeout(() => {
+            /* troll 2: pop quiz */
+            scanWrap.style.display = 'none';
+            document.getElementById('quizWrap').style.display = 'block';
+          }, 1400);
+        }
+        scanFill.style.width = wp + '%';
+      }, 140);
     }
+    /* quiz: every answer is correct */
+    document.querySelectorAll('.quiz-opt').forEach(b => {
+      b.addEventListener('click', () => {
+        const ok = document.getElementById('quizOk');
+        if (ok.textContent) return;
+        ok.textContent = 'Correct. \U0001F60C';
+        setTimeout(() => {
+          truthGate.classList.add('gate-hidden');
+          setTimeout(() => truthGate.remove(), 700);
+        }, 900);
+      });
+    });
     if (tollBtn) {
       tollBtn.addEventListener('click', payToll);
       truthInput.addEventListener('keydown', (e) => {
