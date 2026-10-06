@@ -1396,7 +1396,10 @@ const quotes = [
     let audioLoaded = false;
     let audioFading = false;
 
+    let musicPlaying = false;
+
     function fadeInAudio() {
+      if (musicPlaying && !bgAudio.paused) return;
       if (!audioLoaded) {
         bgAudio.load();
         audioLoaded = true;
@@ -1405,6 +1408,7 @@ const quotes = [
       try {
         bgAudio.volume = 0;
         bgAudio.play().then(() => {
+          musicPlaying = true;
           visualizer.style.display = 'flex';
         }).catch(() => {});
         
@@ -1443,6 +1447,15 @@ const quotes = [
         audioToggle.textContent = 'Play ♫';
       }
     });
+
+    /* Autoplay: attempt on load, then on first tap (browsers require a user gesture) */
+    window.addEventListener('load', () => {
+      setTimeout(() => { if (!musicPlaying) fadeInAudio(); }, 1600);
+    });
+    document.addEventListener('pointerdown', function firstTap() {
+      document.removeEventListener('pointerdown', firstTap);
+      if (!musicPlaying) fadeInAudio();
+    }, { passive: true });
 
     let muted = false;
     muteToggle.addEventListener('click', () => {
